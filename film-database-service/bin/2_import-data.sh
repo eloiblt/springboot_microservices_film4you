@@ -1,0 +1,1 @@
+mongoimport --db film-db --collection films --file /opt/film4u-film-db/movies-cleaned.json --jsonArray

@@ -1,0 +1,12 @@
+<div id="app-container" [ngClass]="theme">
+  <div class="container-wrapper">
+    <app-header *ngIf="showHeader" [(lang)]="lang" (langChange)="setLang($event)" [(theme)]="theme"></app-header>
+    <div class="container-content" #containerContent (scroll)="onScroll()">
+      <router-outlet></router-outlet>
+    </div>
+
+    <button class="btn btn-scroll-top" [class.visible]="scrollBtnVisible" (click)="scrollToTop()">
+      <fa-icon [icon]="'arrow-up'"></fa-icon>
+    </button>
+  </div>
+</div>

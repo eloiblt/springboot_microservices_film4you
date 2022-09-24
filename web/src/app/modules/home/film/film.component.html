@@ -1,0 +1,132 @@
+<button class="btn btn-primary go-back-btn" (click)="goBackBtn()">
+  <fa-icon [icon]="'long-arrow-alt-left'"></fa-icon>
+  <p>{{ 'film.back' | translate }}</p>
+</button>
+
+<div class="film-container">
+  <div class="img-container">
+    <img *ngIf="film" (load)="loaded = true" [ngClass]="{'show': loaded}" [src]="film.imgUrl" alt="">
+  </div>
+
+  <div class="film-details">
+    <ngx-spinner *ngIf="!film" color="grey" bdColor="rgba(0, 0, 0, 0)" size="medium" type="ball-triangle-path"
+      [fullScreen]="false">
+    </ngx-spinner>
+
+    <ng-container *ngIf="film">
+      <div class="film-top">
+        <h1>{{film.title}}</h1>
+
+        <div class="ratings">
+          <div class="rating">
+            <h4>{{ 'film.usersRating' | translate }}</h4>
+            <div class="note">
+              <fa-icon [icon]="'star'"></fa-icon>
+              <p>{{ film.avgVote }} <span>/ 10</span></p>
+            </div>
+          </div>
+
+          <div class="rating">
+            <h4>{{ 'film.yourRating' | translate }}</h4>
+            <div class="note">
+              <fa-icon [icon]="'star'"></fa-icon>
+              <span *ngIf="!mark">{{ 'film.noRating' | translate }}</span>
+              <p *ngIf="mark">{{ mark }} <span>/ 10</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="film-middle">
+        <div class="film-middle-left">
+          <h3>{{film.genre}}</h3>
+          <h3>{{film.year}}</h3>
+        </div>
+        <div class="film-middle-right">
+          <button class="btn btn-primary" (click)="showMarkModal = true">
+            <fa-icon [icon]="'star-half-alt'"></fa-icon>
+            <p *ngIf="mark">{{ 'film.changeRating' | translate }}</p>
+            <p *ngIf="!mark">{{ 'film.addRating' | translate }}</p>
+          </button>
+          <button class="btn btn-primary" (click)="toggleWatchList()">
+            <fa-icon [icon]="'eye'"></fa-icon>
+            <p *ngIf="!isIntoWatchList">
+              {{ 'film.addWatchlist' | translate }}
+            </p>
+            <p *ngIf="isIntoWatchList">
+              {{ 'film.deleteWatchlist' | translate }}
+            </p>
+          </button>
+        </div>
+      </div>
+
+      <p class="description">{{ film.description }}</p>
+
+      <div class="film-label">
+        <h3>{{ 'film.starring' | translate }}</h3>
+        <p>{{ film.actors?.join(', ') }}</p>
+      </div>
+
+      <div class="film-label">
+        <h3>{{ 'film.director' | translate }}</h3>
+        <p>{{ film.director }}</p>
+      </div>
+
+      <div class="film-label">
+        <h3>{{ 'film.writers' | translate }}</h3>
+        <p>{{ film.writer }}</p>
+      </div>
+
+      <div class="film-label">
+        <h3>{{ 'film.production' | translate }}</h3>
+        <p>{{ film.productionCompany }}</p>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<app-slider-films [title]="'film.similar' | translate" [films]="similarFilms"></app-slider-films>
+
+<app-modal *ngIf="showMarkModal" [open]="showMarkModal">
+  <div class="note-modal">
+
+    <h2 *ngIf="!mark">{{ 'film.addRating' | translate }}</h2>
+    <h2 *ngIf="mark">{{ 'film.changeRating' | translate }}</h2>
+
+    <div class="etoiles">
+      <div class="stars filled" [ngStyle]="{'width': (tempMark * 100 / 10) + '%'}">
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+      </div>
+      <div class="stars">
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+        <fa-icon icon="star"></fa-icon>
+      </div>
+      <div class="slider-wrapper">
+        <ngx-slider [(value)]="tempMark" [options]="options"></ngx-slider>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn" (click)="showMarkModal = false">{{'global.cancel' | translate}}</button>
+      <button class="btn btn-danger" (click)="deleteMark()">{{'global.delete' | translate}}</button>
+      <button class="btn btn-primary" (click)="addOrUpdateMark()">{{'global.submit' | translate}}</button>
+    </div>
+  </div>
+</app-modal>

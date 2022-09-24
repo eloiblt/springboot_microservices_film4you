@@ -1,0 +1,42 @@
+button {
+  &.btn {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 0.25rem;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease 0s;
+    cursor: pointer;
+    outline: none;
+
+    fa-icon {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  }
+
+  &.btn-primary {
+    background-color: #2196f3;
+    color: #fff;
+  }
+
+  &.btn-primary:hover {
+    background-color: #00b3db;
+    box-shadow: 0px 5px 5px rgba(0, 179, 219, 0.2);
+  }
+
+  &.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  &.btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0px 5px 5px rgba(200, 35, 51, 0.2);
+  }
+}

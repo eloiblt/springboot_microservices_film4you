@@ -1,0 +1,16 @@
+---
+plugin: aws_ec2
+aws_access_key: "ASIA34JNIGIJFYAU5AHK"
+aws_secret_key: "tjmpfS7h8tzjlL5gIz1ng61ODxY519lSeAqrNdm+"
+aws_security_token: "FwoGZXIvYXdzEPn//////////wEaDMk0cVoJKWrTIMDYEiLJATaUDE8zRSB4db5z9I4mrHVlkS1btU27rsgBay5p0CxNvb/Uy/vdYhYIptEw8VQEEYrHP/M/Sa4e5zaW4cB6XY3VnBCO4QYtwQffljIZHL5GPoKxCpThXoWIXRnLfJhU6kVKAVdtf/Y5sRFpTTAip+1fAt1czAmv5aiXTVvREebmBE+OIj2ASVvbeP3UVIfcS1uQ9t2NfPu+HivHgjBhzK6vzY6CmY/0Z/+SrqT9rCVb4YfsmWkrsVLvzqPl4vxM29xANW55XcVy8Si6qaSPBjItLxZyNUVeTU2DMvYuy6qCSRBdlybTwaMWamxcGLHws1pTo6ccZnhhcMNTqrtH"
+regions:
+  - us-east-1
+keyed_groups:
+  - key: tags
+    prefix: tag
+  - prefix: instance_type
+    key: instance_type
+  - key: placement.region
+    prefix: aws_region
+hostnames:
+  - dns-name

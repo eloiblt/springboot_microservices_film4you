@@ -1,0 +1,82 @@
+<div id="header">
+  <div class="header-content">
+    <div class="logo" (click)="goToHomePage()">
+      <img src="../../../../assets/logo.png" alt="">
+      <h1>{{ 'global.title' | translate }}</h1>
+    </div>
+
+      <div class="search-bar input-with-icon">
+        <input type="text" [(ngModel)]="searchTerm" #searchInput (keyup)="searchTerm$.next($event.target.value)"
+          [placeholder]="'global.searchMovie' | translate">
+        <fa-icon [icon]="'search'"></fa-icon>
+
+      <div class="search-options" [ngClass]="{ 'show': advancedSearch }">
+        <ng-select [placeholder]="'Genre'" (change)="searchTerm$.next(searchTerm)" [items]="genres"
+          [(ngModel)]="selectedGenre">
+        </ng-select>
+
+        <ng-select [placeholder]="'header.year' | translate" (change)="searchTerm$.next(searchTerm)" [items]="years"
+          [(ngModel)]="selectedYear">
+        </ng-select>
+      </div>
+
+      <fa-icon class="advanced-search" *ngIf="!advancedSearch" (click)="advancedSearch = !advancedSearch"
+        [icon]="'filter'"></fa-icon>
+      <fa-icon class="advanced-search" *ngIf="advancedSearch" (click)="advancedSearch = !advancedSearch"
+        [icon]="'times-circle'"></fa-icon>
+
+      <div class="search-result" (clickOutside)="searchResult = []"
+        [exclude]="'.search-bar, .input-with-icon, .advanced-search'"
+        [ngClass]="{'show': searchResult?.length || loading}">
+
+        <div class="loader-zone" *ngIf="loading">
+          <ngx-spinner color="grey" bdColor="rgba(0, 0, 0, 0)" size="medium" type="ball-triangle-path"
+            [fullScreen]="false">
+          </ngx-spinner>
+        </div>
+
+        <ng-container *ngIf="searchResult?.length">
+          <div class="film-result" *ngFor="let film of searchResult" (click)="goToFilm(film.id)">
+            <div class="img-container">
+              <img (load)="loaded(film.id)" [ngClass]="{'show': isLoaded(film.id)}" [src]="film.imgUrl" alt="">
+            </div>
+            <div class="film-infos">
+              <p class="title">{{ film.title }}</p>
+              <p class="year">{{ film.year }}</p>
+              <p class="actors">{{ film.actors }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-select [(ngModel)]="lang" [clearable]="false" (change)="changeLang()">
+      <ng-option *ngFor="let lang of langs" [value]="lang">{{ 'header.' + lang | translate}}</ng-option>
+    </ng-select>
+
+    <div class="theme-switcher">
+      <input type="checkbox" [checked]="theme === 'dark'" (change)="changeTheme()" class="checkbox" id="checkbox">
+      <label for="checkbox" class="label">
+        <fa-icon class="moon" [icon]="'moon'"></fa-icon>
+        <fa-icon class="sun" [icon]="'sun'"></fa-icon>
+        <div class='ball'></div>
+      </label>
+    </div>
+
+    <div class="dropdown" *ngIf="user">
+      <fa-icon class="user" (click)="showModal = true" [icon]="'user-circle'"></fa-icon>
+      <div (clickOutside)="showModal = false" [exclude]="'.user'" class="dropdown-content"
+        [ngClass]="{'show': showModal}">
+        <p>Hello, {{user.firstname}} !</p>
+        <a (click)="goToUserPage()">
+          {{ 'header.account' | translate }}
+          <fa-icon [icon]="'user-circle'"></fa-icon>
+        </a>
+        <a (click)="logout()">
+          {{ 'header.logout' | translate }}
+          <fa-icon [icon]="'sign-out-alt'"></fa-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

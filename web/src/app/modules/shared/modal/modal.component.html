@@ -1,0 +1,14 @@
+<div class="modal" *ngIf="_open" role="dialog">
+  <div class="overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="title" *ngIf="modalTitle">
+        {{ modalTitle }}
+      </h2>
+      <div class="body-container">
+        <div class="body">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

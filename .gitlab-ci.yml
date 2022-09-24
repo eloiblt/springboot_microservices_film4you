@@ -1,0 +1,150 @@
+stages:
+  - build
+  - sonar
+  - docker
+  - deploy
+
+build-maven:
+  image: maven:3.8.3-jdk-11-slim
+  stage: build
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - mvn clean install -B -DskipTests
+    - mvn package -DskipTests
+  cache:
+    key: "cache-$CI_PROJECT_ID"
+    paths:
+      - '**/target/*.jar'
+      - '**/target/classes'
+    when: 'on_success'
+  tags:
+    - ffu
+    - maven
+
+sonar-maven:
+  image: maven:3.8.3-jdk-11-slim
+  stage: sonar
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - mvn sonar:sonar -Dsonar.projectKey=film4u-maven -Dsonar.login=$SONAR_TOKEN
+  cache:
+    key: "cache-$CI_PROJECT_ID"
+    policy: pull
+    paths:
+      - '**/target/classes'
+  tags:
+    - ffu
+    - maven
+
+sonar-recommandation-service:
+  image: sonarsource/sonar-scanner-cli:4
+  stage: sonar
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - cd recommandation-microservice
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  tags:
+    - ffu
+
+sonar-film-database-service:
+  image: sonarsource/sonar-scanner-cli:4
+  stage: sonar
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - cd film-database-service
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  tags:
+    - ffu
+
+sonar-clustering-module:
+  image: sonarsource/sonar-scanner-cli:4
+  stage: sonar
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - cd clustering-module
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  tags:
+    - ffu
+
+sonar-frontend-service:
+  image: sonarsource/sonar-scanner-cli:4
+  stage: sonar
+  only:
+    refs:
+      - tags
+      - main
+  script:
+    - cd web
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  tags:
+    - ffu
+
+docker:
+  image: docker:19.03.12
+  stage: docker
+  only:
+    refs:
+      - tags
+  before_script:
+    - apk add docker-compose --update-cache --repository http://dl-3.alpinelinux.org/Alpine/Edge/testing/ --allow-untrus
+    - docker version
+    - docker-compose version
+  script:
+    - echo $DOCKER_TOKEN | docker login registry.gitlab.com -u $DOCKER_USERNAME --password-stdin
+    - FFY_VERSION=$CI_COMMIT_TAG docker-compose build
+    - FFY_VERSION=$CI_COMMIT_TAG docker-compose push
+    - cd production
+    - sed "s/${FFY_VERSION:-latest}/$CI_COMMIT_TAG/;" docker-compose.yml > docker-compose-devops.yml
+  cache:
+    key: "cache-$CI_PROJECT_ID"
+    policy: pull-push
+    paths:
+      - '**/target/*.jar'
+      - 'production/docker-compose-devops.yml'
+  tags:
+    - ffu
+    - maven
+
+deploy_aws:
+  stage: deploy
+  image: mullnerz/ansible-playbook:latest
+  environment:
+    name: dev
+    url: http://$AWS_HOSTNAME
+  only:
+    refs:
+      - tags
+  before_script:
+    - echo "$SSH_KEY" | tr -d '\r' > aws_rsa.pem
+    - chmod 700 aws_rsa.pem
+    - pip3 install boto3
+    - pip3 install docker
+  script:
+    - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=false
+    - export DOCKER_USERNAME=$DOCKER_USERNAME
+    - export DOCKER_PASSWORD=$DOCKER_TOKEN
+    - ansible-playbook -i dynamic_hosts/aws_ec2.yml --private-key ../aws_rsa.pem film4you.yml -e 'ansible_python_interpreter=/usr/bin/python3'
+  tags:
+    - ffu
+    - maven
+  cache:
+    key: "cache-$CI_PROJECT_ID"
+    policy: pull
+    paths:
+      - 'production/docker-compose-devops.yml'

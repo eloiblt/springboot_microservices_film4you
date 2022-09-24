@@ -1,0 +1,50 @@
+discovery.service:
+  hostname: "localhost"
+  port: "8010"
+  path: "eureka"
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    metadata-map:
+      metrics:
+        path: /actuator/prometheus
+  client:
+    serviceUrl:
+      defaultZone: "http://${discovery.service.hostname}:${discovery.service.port}/${discovery.service.path}"
+
+server:
+  error:
+    include-message: always
+  port: 0
+
+springdoc:
+  swagger-ui:
+    configUrl: '/preferences/v3/api-docs/swagger-config'
+    display-request-duration: true
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+    use-root-path: false
+    url: '/preferences/v3/api-docs'
+
+spring:
+  application:
+    name: "preferences"
+  datasource:
+    url: "jdbc:postgresql://localhost:6002/preference-db"
+    username: "postgres"
+    password: "root"
+  jackson:
+    default-property-inclusion: NON_NULL
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

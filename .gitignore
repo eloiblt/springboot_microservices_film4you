@@ -1,0 +1,12 @@
+.idea/
+.vscode/
+
+**/target/**/*
+
+**/node_modules/**/*
+/**/node_modules
+/**/target
+
+/filmforyou.iml
+film-database/db-image-builder
+

@@ -1,0 +1,199 @@
+version: '3.3'
+services:
+
+  user-api-service:
+    deploy:
+      replicas: 3
+    depends_on:
+      - discovery-service
+      - user-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/user-api-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-database-service:5432/user-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_SERVICE_NAME=UserApiService
+
+  film-api-service:
+    deploy:
+      replicas: 2
+    depends_on:
+      - discovery-service
+      - film-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/film-api-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATA_MONGODB_HOST=film-database-service
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_USERNAME=mongo
+      - SPRING_DATA_MONGODB_PASSWORD=root
+      - SPRING_DATA_MONGODB_DATABASE=film-db
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_SERVICE_NAME=FilmApiService
+
+  preference-api-service:
+    deploy:
+      replicas: 2
+    depends_on:
+      - discovery-service
+      - preference-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/preference-api-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://preference-database-service:5432/preference-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_SERVICE_NAME=PreferenceApiService
+
+  recommandation-api-service:
+    deploy:
+      replicas: 2
+    depends_on:
+      - discovery-service
+      - recommandation-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/recommandation-api-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_HOST=discovery-service
+      - EUREKA_PORT=8080
+      - APPLICATION_NAME=recommandation-api-service
+      - IS_FROM_DOCKER=true
+
+  web-service:
+    image: registry.gitlab.com/nathan-mittelette/film4you/web-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+
+  discovery-service:
+    image: registry.gitlab.com/nathan-mittelette/film4you/discovery-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_SERVICE_NAME=DiscoveryApiService
+
+  api-gateway-service:
+    ports:
+      - "80:80"
+    depends_on:
+      - discovery-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/api-gateway-service:${FFY_VERSION:-latest}
+    networks:
+      apinetwork:
+    environment:
+      - SERVER_PORT=80
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - EUREKA_INSTANCE_HOSTNAME=api-gateway-service
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_SERVICE_NAME=ApiGatewayService
+
+  user-database-service:
+    image: 'postgres:13.2-alpine'
+    networks:
+      apinetwork:
+    volumes:
+      - ffu-postgres-user-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=user-db
+
+  film-database-service:
+    image: registry.gitlab.com/nathan-mittelette/film4you/film-database-service:1.0.0
+    networks:
+      apinetwork:
+
+  preference-database-service:
+    image: 'postgres:13.2-alpine'
+    networks:
+      apinetwork:
+    volumes:
+      - ffu-postgres-preference-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=preference-db
+
+  recommandation-database-service:
+    image: 'registry.gitlab.com/nathan-mittelette/film4you/recommandation-database-service:1.0.1'
+    networks:
+      apinetwork:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=recommandation-db
+
+  prometheus-service:
+    image: prom/prometheus:v2.30.2
+    networks:
+      apinetwork:
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana-service:
+    image: grafana/grafana:8.2.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./grafana/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./grafana/dashboards/jvm-micrometer.json:/var/lib/grafana/dashboards/jvm-micrometer.json
+      - ./grafana/dashboards/node-js.json:/var/lib/grafana/dashboards/node-js.json
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      apinetwork:
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/opentelemetry-all-in-one
+    ports:
+      - "16686:16686"
+    environment:
+      - JAEGER_AGENT_HOST=jaeger
+    networks:
+      apinetwork:
+    restart: on-failure
+  
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  apinetwork:
+
+volumes:
+  ffu-postgres-preference-data:
+  ffu-postgres-user-data:
+

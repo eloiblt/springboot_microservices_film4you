@@ -1,0 +1,83 @@
+$animationParams: 0.15s linear;
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  .overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: showOverlay $animationParams;
+
+    .modal-content {
+      background-color: var(--modal-color);
+      max-height: 90vh;
+      max-width: 90vw;
+      box-sizing: border-box;
+      overflow: hidden;
+      border-radius: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      animation: showModalContent $animationParams;
+      padding: 10px;
+      text-align: center;
+
+      .button-close-container {
+        text-align: right;
+        min-height: 30px;
+
+        button {
+          padding: 10px;
+        }
+      }
+
+      .title {
+        padding: 0 10px;
+        margin: 0 0 20px 0;
+      }
+
+      .body-container {
+        flex: 1;
+        overflow: auto;
+        .body {
+          min-height: min-content;
+          padding: 5px 15px 25px 15px;
+          .help-modal {
+            .help-text {
+              p {
+                text-align: left;
+                span {
+                  font-weight: bold;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes showOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes showModalContent {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}

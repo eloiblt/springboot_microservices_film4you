@@ -1,0 +1,78 @@
+{
+  "global": {
+    "searchMovie": "Search a movie",
+    "title": "Film4you",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "delete": "Delete"
+  },
+  "header": {
+    "account": "My account",
+    "theme": "Change theme",
+    "logout": "Logout",
+    "fr": "French",
+    "en": "English",
+    "year": "Year",
+    "genre": "Genre"
+  },
+  "login": {
+    "error": "Error while logging in",
+    "signin": "Sign in",
+    "google": "Login with Google"
+  },
+  "slider": {
+    "back": "Back",
+    "next": "Next",
+    "seeMore": "See more",
+    "noFilms": "No films to show",
+    "noLikes": "No film liked"
+  },
+  "home": {
+    "newest": "Newest films",
+    "popular": "Most popular films",
+    "bestRated": "Best rated films",
+    "recommandations": "Recommendations"
+  },
+  "film": {
+    "back": "Back",
+    "usersRating": "Users rating",
+    "yourRating": "Your rating",
+    "changeRating": "Change my rating",
+    "addRating": "Add rating",
+    "starring": "Starring",
+    "director": "Director",
+    "writers": "Writers",
+    "production": "Production",
+    "addWatchlist": "Add to my watchlist",
+    "deleteWatchlist": "Delete from my watchlist",
+    "year": "Year",
+    "noRating": "No rating",
+    "similar": "Similar films"
+  },
+  "user": {
+    "searchUser": "Search a user",
+    "informations": {
+      "myTitle": "My informations",
+      "title": "User informations",
+      "lastname": "Lastname",
+      "firstname": "Firstname",
+      "email": "Email",
+      "visibility": "Visibility"
+    },
+    "stats": {
+      "myTitle": "My Statistics",
+      "title": "Statistics of the user",
+      "views": "Number of views",
+      "duration": "Total duration",
+      "genre": "Favorite genre",
+      "director": "Favorite director",
+      "production": "Favorite production",
+      "actors": "Favorite actor",
+      "noData": "No data"
+    },
+    "download": "Download my data",
+    "delete": "Delete my account",
+    "watchlist": "My watchlist",
+    "history": "My history"
+  }
+}

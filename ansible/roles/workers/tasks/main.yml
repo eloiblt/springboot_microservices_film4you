@@ -1,0 +1,30 @@
+---
+# tasks file for workers
+- name: installing docker 
+  package:
+    name:
+    - docker
+    state: present
+
+- name: enabling docker service
+  service:
+    name: "{{ item }}"  
+    state: started
+    enabled: yes
+  loop:
+    - docker
+  
+- name: install requests, docker pip module
+  pip:
+    state: present
+    name: 
+    - requests
+    - docker
+
+- name: Add nodes
+  docker_swarm:
+    state: join
+    remote_addrs: ["{{hostvars[item]['private_ip_address']}}"]
+    join_token: "{{hostvars[item]['swarm_info']['swarm_facts']['JoinTokens']['Worker']}}"
+  with_items: "{{ groups['tag_Name_Manager'] }}"
+

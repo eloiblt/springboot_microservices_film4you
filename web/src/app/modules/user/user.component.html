@@ -1,0 +1,112 @@
+<div class="user">
+  <ngx-spinner *ngIf="loading" color="grey" bdColor="rgba(0, 0, 0, 0)" size="medium" type="ball-triangle-path"
+    [fullScreen]="false">
+  </ngx-spinner>
+
+  <div class="search-bar input-with-icon">
+    <input type="text" #searchInput (keyup)="searchTerm$.next($event.target.value)"
+      [placeholder]="'user.searchUser' | translate">
+    <fa-icon [icon]="'search'"></fa-icon>
+
+    <div class="search-result" (clickOutside)="close()" [exclude]="'.search-bar, .input-with-icon'"
+      [ngClass]="{'show': searchResult?.length || searchLoading}">
+
+      <div class="loader-zone" *ngIf="searchLoading">
+        <ngx-spinner color="grey" bdColor="rgba(0, 0, 0, 0)" size="medium" type="ball-triangle-path"
+          [fullScreen]="false">
+        </ngx-spinner>
+      </div>
+
+      <ng-container *ngIf="searchResult?.length">
+        <div class="user-result" *ngFor="let user of searchResult" (click)="goToUser(user.id)">
+          <p>{{ user.firstname }}</p>
+          <p>{{ user.lastname }}</p>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="user-infos">
+    <div class="user-column">
+      <h2 *ngIf="isCurrentUser">{{'user.informations.myTitle' | translate}}</h2>
+      <h2 *ngIf="!isCurrentUser">{{'user.informations.title' | translate}}</h2>
+
+      <ul class="infos no-bullets" *ngIf="user">
+        <li>
+          <p>{{'user.informations.firstname' | translate}}</p>
+          <span>{{ user.firstname }}</span>
+        </li>
+        <li>
+          <p>{{'user.informations.lastname' | translate}}</p>
+          <span>{{ user.lastname }}</span>
+        </li>
+        <li>
+          <p>{{'user.informations.email' | translate}}</p>
+          <span>{{ user.email }}</span>
+        </li>
+        <li class="visibility">
+          <p>{{'user.informations.visibility' | translate}}</p>
+          <div class="options" *ngIf="isCurrentUser">
+            <div class="option">
+              <input type="radio" [(ngModel)]="user.visibility" value="PRIVATE" (ngModelChange)="updateVisibility()">
+              <span>Privé</span>
+            </div>
+            <div class="option">
+              <input type="radio" [(ngModel)]="user.visibility" value="PUBLIC" (ngModelChange)="updateVisibility()">
+              <span>Public</span>
+            </div>
+          </div>
+          <span *ngIf="!isCurrentUser"> {{ user.visibility.toLowerCase() }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="user-column stats">
+      <h2 *ngIf="isCurrentUser">{{'user.stats.myTitle' | translate}}</h2>
+      <h2 *ngIf="!isCurrentUser">{{'user.stats.title' | translate}}</h2>
+
+      <ul class="infos no-bullets" *ngIf="user">
+        <li>
+          <p>{{'user.stats.views' | translate}}</p>
+          <span>{{ user.summary.filmViewed }}</span>
+        </li>
+        <li>
+          <p>{{'user.stats.duration' | translate}}</p>
+          <span>{{ user.summary.totalDuration }} min</span>
+        </li>
+        <li>
+          <p>{{'user.stats.genre' | translate}}</p>
+          <span>{{ formatUnknownValue(user.summary.genre) }}</span>
+        </li>
+        <li>
+          <p>{{'user.stats.director' | translate}}</p>
+          <span>{{ formatUnknownValue(user.summary.director )}}</span>
+        </li>
+        <li>
+          <p>{{'user.stats.production' | translate}}</p>
+          <span>{{ formatUnknownValue(user.summary.production) }}</span>
+        </li>
+        <li>
+          <p>{{'user.stats.actors' | translate}}</p>
+          <span>{{ formatUnknownValue(user.summary.actor) }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="buttons" *ngIf="isCurrentUser">
+    <button class="btn btn-primary" (click)="downloadData()">
+      <fa-icon [icon]="'download'"></fa-icon>
+      <p>{{'user.download' | translate}}</p>
+    </button>
+
+    <button class="btn btn-danger" (click)="deleteAccount()">
+      <fa-icon [icon]="'trash'"></fa-icon>
+      <p>{{'user.delete' | translate}}</p>
+    </button>
+  </div>
+
+  <app-slider-films *ngIf="watchList" [title]="'user.watchlist' | translate" [films]="watchList"></app-slider-films>
+  <app-slider-films *ngIf="preferences" [title]="'user.history' | translate" [films]="preferences"></app-slider-films>
+
+</div>

@@ -1,0 +1,12 @@
+---
+- hosts: tag_Name_Manager
+  become: yes
+  remote_user: ec2-user
+  roles:
+      - manager
+ 
+- hosts: tag_Name_Worker
+  become: yes
+  remote_user: ec2-user
+  roles:
+      - workers

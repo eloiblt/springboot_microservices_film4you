@@ -1,0 +1,64 @@
+discovery.service:
+  hostname: "localhost"
+  port: "8010"
+  path: "eureka"
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    metadata-map:
+      metrics:
+        path: /actuator/prometheus
+  client:
+    serviceUrl:
+      defaultZone: "http://${discovery.service.hostname}:${discovery.service.port}/${discovery.service.path}"
+
+security:
+  expirationTime: 864000000
+  secret: "filmforyou"
+  tokenPrefix: "Bearer "
+  headerString: "Authorization"
+
+google:
+  clientId: "289089852412-vub85om86eqi72obavfft3amnm7f47ga.apps.googleusercontent.com"
+
+server:
+  error:
+    include-message: always
+  port: 0
+
+springdoc:
+  swagger-ui:
+    configUrl: '/users/v3/api-docs/swagger-config'
+    display-request-duration: true
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+    use-root-path: false
+    url: '/users/v3/api-docs'
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  application:
+    name: "users"
+  datasource:
+    url: "jdbc:postgresql://localhost:6000/user-db"
+    username: "postgres"
+    password: "root"
+  jackson:
+    default-property-inclusion: NON_NULL
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

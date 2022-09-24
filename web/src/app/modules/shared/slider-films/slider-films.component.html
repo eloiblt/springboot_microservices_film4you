@@ -1,0 +1,33 @@
+<div class="slider-films">
+  <h2>{{ title }}</h2>
+
+  <div class="horizontal-container">
+    <fa-icon *ngIf="printedFilms?.length" (click)="goLeft()" [icon]="'chevron-left'"></fa-icon>
+
+    <div #scrollableSlider class="scrollable-slider" [ngClass]="{'hide': !printedFilms?.length}">
+      <p *ngIf="!printedFilms?.length">{{ getNoDataText() }}</p>
+
+      <ng-container *ngIf="printedFilms?.length">
+        <a class="film" (click)="goToFilm(film.id)" (middleclick)="goToFilmNewTab(film.id)" *ngFor="let film of printedFilms">
+          <div class="img-container">
+            <img loading="lazy" [ngClass]="{'show': isLoaded(film.id)}" (load)="loaded(film.id)" [src]="film.imgUrl" alt="">
+          </div>
+          <div class="notes">
+            <p class="user-note" *ngIf="film.userNote">
+              <fa-icon [icon]="'star'"></fa-icon>
+              {{ film.userNote }}
+            </p>
+            <p class="global-note">
+              <fa-icon [icon]="'star'"></fa-icon>
+              {{ film.avgVote }}
+            </p>
+          </div>
+          <p class="title" [tooltip]="film.title">{{ film.title }}</p>
+          <p class="see-more">{{ 'slider.seeMore' | translate }}</p>
+        </a>
+      </ng-container>
+    </div>
+
+    <fa-icon *ngIf="printedFilms?.length" (click)="goRight()" [icon]="'chevron-right'"></fa-icon>
+  </div>
+</div>

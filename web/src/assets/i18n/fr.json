@@ -1,0 +1,79 @@
+{
+  "global": {
+    "searchMovie": "Rechercher un film",
+    "title": "Film4you",
+    "cancel": "Annuler",
+    "submit": "Valider",
+    "delete": "Supprimer"
+  },
+  "header": {
+    "account": "Mon compte",
+    "theme": "Changer de thème",
+    "logout": "Déconnexion",
+    "fr": "Français",
+    "en": "Anglais",
+    "year": "Année",
+    "genre": "Genre"
+  },
+  "login": {
+    "error": "Erreur lors de la connexion",
+    "signin": "Connexion",
+    "google": "Se connecter avec Google"
+  },
+  "slider": {
+    "back": "Précédent",
+    "next": "Suivant",
+    "seeMore": "Voir plus",
+    "noFilms": "Aucun film à afficher",
+    "noLikes": "Vous n'avez pas encore aimé de films"
+  },
+  "home": {
+    "newest": "Films les plus récents",
+    "popular": "Films les plus populaires",
+    "bestRated": "Films les mieux notés",
+    "recommandations": "Recommandations"
+  },
+  "film": {
+    "back": "Précédent",
+    "usersRating": "Note des utilisateurs",
+    "yourRating": "Votre note",
+    "starring": "Acteurs",
+    "director": "Réalisateur",
+    "writers": "Scénaristes",
+    "production": "Production",
+    "addWatchlist": "Ajouter à ma watchlist",
+    "deleteWatchlist": "Supprimer de ma watchlist",
+    "changeRating": "Modifier ma note",
+    "addRating": "Ajouter une note",
+    "year": "Année",
+    "noRating": "Non noté",
+    "similar": "Films similaires"
+  },
+  "user": {
+    "myInformations": "Mes informations",
+    "searchUser": "Rechercher un utilisateur",
+    "informations": {
+      "myTitle": "Mes informations",
+      "title": "Informations de l'utilisateur",
+      "lastname": "Nom",
+      "firstname": "Prénom",
+      "email": "Email",
+      "visibility": "Visibilité"
+    },
+    "stats": {
+      "myTitle": "Mes statistiques",
+      "title": "Statistiques de l'utilisateur",
+      "views": "Nombre de films vus",
+      "duration": "Durée totale de visionnage",
+      "genre": "Genre favoris",
+      "director": "Réalisateur favoris",
+      "production": "Maison de production favorite",
+      "actors": "Acteurs favoris",
+      "noData": "Aucun, aucun film noté positivement"
+    },
+    "download": "Télécharger mes données",
+    "delete": "Supprimer mon compte",
+    "watchlist": "Ma watchlist",
+    "history": "Mon historique"
+  }
+}

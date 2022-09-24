@@ -1,0 +1,6 @@
+---
+- hosts: tag_Name_Manager
+  become: yes
+  remote_user: ec2-user
+  roles:
+      - film4you

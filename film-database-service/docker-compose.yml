@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+
+  film-database-service:
+      container_name: film-database-service
+      build: ./
+      command:
+        - '--auth'
+        - '-f'
+        - '/etc/mongodb.conf'
+      ports:
+        - "6001:27017"

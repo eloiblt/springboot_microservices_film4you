@@ -1,0 +1,8 @@
+---
+# vars file for ec2-provision
+ffu_key_name: "ffu-key"
+ffu_aws_image: "ami-08e4e35cccc6189f4"
+ffu_subnet_id: "subnet-0a1870f22fe63ec4d"
+ffu_manager_node_count: 1
+ffu_worker_node_count: 3
+ffu_region: "us-east-1"

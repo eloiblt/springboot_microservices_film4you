@@ -1,0 +1,8 @@
+<div class="login-container">
+  <fa-icon [icon]="'clipboard-check'"></fa-icon>
+  <h2>{{ 'login.signin' | translate }}</h2>
+  <button type="button" (click)="loginWithGoogle()" class="login-with-google">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"/> 
+    <p>{{ 'login.google' | translate }}</p>
+  </button>
+</div>

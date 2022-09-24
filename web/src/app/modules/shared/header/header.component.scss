@@ -1,0 +1,281 @@
+#header {
+  background-color: var(--header-background);
+  color: white;
+  padding: 10px;
+  box-shadow: 0px 0px 5px #1e1b1b;
+  display: flex;
+  justify-content: center;
+
+  .header-content {
+    width: 90%;
+    display: flex;
+    align-items: center;
+
+    .logo {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      img {
+        width: 35px;
+        margin-right: 10px;
+      }
+
+      h1 {
+        margin-right: 40px;
+        font-size: 25px;
+        font-weight: bold;
+      }
+    }
+
+    .search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input[type="text"] {
+        background-color: var(--header-input-background);
+        width: 400px;
+        color: white;
+        transition: width 0.3s;
+
+        &.small {
+          width: 300px;
+        }
+      }
+
+      fa-icon {
+        color: white;
+      }
+
+      ::placeholder {
+        color: white;
+      }
+
+      .search-options {
+        display: flex;
+        width: 0px;
+        opacity: 0;
+        transition: all 0.3s;
+
+        &.show {
+          margin-left: 20px;
+          opacity: 1;
+          width: auto;
+
+          ng-select {
+            width: 150px;
+
+            &:first-of-type {
+              margin-right: 20px;
+            }
+          }
+        }
+      }
+
+      .advanced-search {
+        margin-left: 20px;
+        z-index: 1;
+        cursor: pointer;
+        font-size: 20px;
+      }
+
+      .search-result {
+        max-height: 0;
+        transition: max-height 0.5s ease-out;
+        overflow: hidden;
+        background-color: var(--search-result-color);
+        position: absolute;
+        left: 0;
+        right: 0;
+        border-radius: 0px 0px 5px 5px;
+        box-shadow: 0px 2px 5px #1e1b1b;
+        z-index: 1;
+        top: 37px;
+
+        .loader-zone {
+          height: 100px;
+        }
+
+        .film-result {
+          cursor: pointer;
+          color: #1e1b1b;
+          padding: 10px;
+          border-radius: 5px;
+          display: flex;
+
+          .img-container {
+            width: 80px;
+            height: 120px;
+            position: relative;
+            margin-right: 10px;
+            border-radius: 5px;
+
+            img {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              border-radius: 5px;
+              transition: opacity 1s;
+              opacity: 0;
+
+              &.show {
+                opacity: 1;
+              }
+            }
+          }
+
+          .film-infos {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+            justify-content: center;
+            color: var(--text-primary);
+
+            .title {
+              font-size: 25px;
+              font-weight: 500;
+            }
+
+            .year {
+              letter-spacing: 1px;
+              color: grey;
+              font-weight: 400;
+            }
+
+            .actors {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+          }
+
+          &:hover {
+            background-color: var(--hover-color);
+          }
+        }
+
+        &.show {
+          max-height: 2000px;
+          transition: max-height 0.25s ease-in;
+          padding: 10px;
+        }
+      }
+    }
+
+    > ng-select {
+      margin-left: auto;
+      height: 35px;
+      width: 150px;
+    }
+
+    .theme-switcher {
+      margin: 0px 20px;
+
+      .checkbox {
+        opacity: 0;
+        position: absolute;
+        cursor: pointer;
+      }
+
+      .label {
+        width: 61px;
+        height: 35px;
+        background-color: var(--theme-color);
+        display: flex;
+        border-radius: 1000px;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .ball {
+        width: 31px;
+        height: 31px;
+        background-color: var(--theme-ball-color);
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        border-radius: 50%;
+        transition: transform 0.2s linear;
+      }
+
+      .checkbox:checked + .label .ball {
+        transform: translateX(26px);
+      }
+
+      fa-icon {
+        font-size: 20px;
+        position: absolute;
+      }
+
+      .moon {
+        color: pink;
+        left: 6px;
+        top: 8px;
+      }
+
+      .sun {
+        color: yellow;
+        right: 6px;
+        top: 8px;
+      }
+    }
+
+    .dropdown {
+      font-size: 25px;
+      cursor: pointer;
+      position: relative;
+
+      .dropdown-content {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        font-size: 14px;
+        border-radius: 10px;
+        background-color: var(--search-result-color);
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: 30px;
+        right: -70px;
+        left: -70px;
+        padding: 10px;
+
+        p {
+          font-weight: bold;
+          text-align: center;
+          white-space: nowrap;
+        }
+
+        a {
+          display: flex;
+        }
+
+        a,
+        p {
+          align-items: center;
+          cursor: pointer;
+          padding: 10px;
+          border-radius: 5px;
+          color: var(--text-primary);
+
+          fa-icon {
+            font-size: 16px;
+            margin-left: auto;
+          }
+        }
+
+        a:hover {
+          background-color: var(--hover-color);
+        }
+
+        &.show {
+          display: flex;
+        }
+      }
+    }
+  }
+}

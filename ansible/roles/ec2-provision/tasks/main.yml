@@ -1,0 +1,32 @@
+---
+  - name: launch Manager Node AWS cloud
+    ec2:
+          key_name: "{{ffu_key_name}}"
+          instance_type: "t2.medium"
+          image: "{{ffu_aws_image}}"
+          wait: yes
+          count: "{{ffu_manager_node_count}}"
+          vpc_subnet_id: "{{ffu_subnet_id}}"
+          assign_public_ip: yes
+          region: "{{ffu_region}}"
+          state: present
+          aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+          aws_secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+          aws_security_token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+          instance_tags: {"Name": "Manager", "Cluster": "Swarm Cluster"}
+
+  - name: launch Worker Node on AWS cloud
+    ec2:
+          key_name: "{{ffu_key_name}}"
+          instance_type: "t2.medium"
+          image: "{{ffu_aws_image}}"
+          wait: yes
+          count: "{{ffu_worker_node_count}}"
+          vpc_subnet_id: "{{ffu_subnet_id}}"
+          assign_public_ip: yes
+          region: "{{ffu_region}}"
+          state: present
+          aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+          aws_secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+          aws_security_token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+          instance_tags: {"Name": "Worker", "Cluster": "Swarm Cluster"}

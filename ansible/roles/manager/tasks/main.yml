@@ -1,0 +1,30 @@
+---
+# tasks file for manager
+- name: installing docker
+  package:
+    name:
+    - docker
+    state: present
+
+- name: enabling docker service
+  service:
+    name: "{{ item }}"  
+    state: started
+    enabled: yes
+  loop:
+    - docker
+
+- name: install requests, docker, jsondiff, pyyaml, docker-compose pip module
+  pip:
+    state: present
+    name: 
+    - requests
+    - docker
+    - jsondiff
+    - pyyaml
+    - docker-compose
+
+- name: init docker swarm
+  docker_swarm:
+    state: present
+  register: swarm_info

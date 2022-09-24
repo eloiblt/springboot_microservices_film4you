@@ -1,0 +1,43 @@
+discovery.service:
+  hostname: "localhost"
+  port: "8010"
+  path: "eureka"
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    metadata-map:
+      metrics:
+        path: /actuator/prometheus
+  client:
+    serviceUrl:
+      defaultZone: "http://${discovery.service.hostname}:${discovery.service.port}/${discovery.service.path}"
+
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: web_route
+          uri: http://web-service
+          predicates:
+            - Path=/web/**,/assets/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

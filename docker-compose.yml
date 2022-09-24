@@ -1,0 +1,166 @@
+version: '3.3'
+services:
+
+  user-api-service:
+    build: user-microservice/user-core
+    deploy:
+      replicas: 1
+    depends_on:
+      - discovery-service
+      - user-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/user-api-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-database-service:5432/user-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  film-api-service:
+    build: film-microservice/film-core
+    deploy:
+      replicas: 1
+    depends_on:
+      - discovery-service
+      - film-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/film-api-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATA_MONGODB_HOST=film-database-service
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_USERNAME=mongo
+      - SPRING_DATA_MONGODB_PASSWORD=root
+      - SPRING_DATA_MONGODB_DATABASE=film-db
+
+  preference-api-service:
+    build: preference-microservice/preference-core
+    deploy:
+      replicas: 1
+    depends_on:
+      - discovery-service
+      - preference-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/preference-api-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://preference-database-service:5432/preference-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  recommandation-api-service:
+    build: recommandation-microservice
+    deploy:
+      replicas: 1
+    depends_on:
+      - discovery-service
+      - recommandation-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/recommandation-api-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_HOST=discovery-service
+      - EUREKA_PORT=8080
+      - APPLICATION_NAME=recommandation-api-service
+      - IS_FROM_DOCKER=true
+
+  discovery-service:
+    container_name: discovery-service
+    build: discovery-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/discovery-service:${FFY_VERSION:-latest}
+    ports:
+      - "8010:8080"
+    networks:
+      api-network:
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+
+  api-gateway-service:
+    container_name: api-gateway-service
+    build: api-gateway-service
+    ports:
+      - "80:80"
+    depends_on:
+      - discovery-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/api-gateway-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+    environment:
+      - SERVER_PORT=80
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8080/eureka
+      - EUREKA_INSTANCE_HOSTNAME=api-gateway-service
+
+  web-service:
+    container_name: web-service
+    build: web
+    ports:
+      - "4200:80"
+    image: registry.gitlab.com/nathan-mittelette/film4you/web-service:${FFY_VERSION:-latest}
+    networks:
+      api-network:
+
+  user-database-service:
+    container_name: user-database-service
+    image: 'postgres:13.2-alpine'
+    networks:
+      api-network:
+    volumes:
+      - ffu-postgres-user-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=user-db
+    ports:
+      - "6000:5432"
+
+  film-database-service:
+    container_name: film-database-service
+    image: registry.gitlab.com/nathan-mittelette/film4you/film-database-service:1.0.0
+    networks:
+      api-network:
+    ports:
+      - "6001:27017"
+
+  preference-database-service:
+    container_name: preference-database-service
+    image: 'postgres:13.2-alpine'
+    networks:
+      api-network:
+    volumes:
+      - ffu-postgres-preference-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=preference-db
+    ports:
+      - "6002:5432"
+    
+  recommandation-database-service:
+    container_name: recommandation-database-service
+    image: 'registry.gitlab.com/nathan-mittelette/film4you/recommandation-database-service:1.0.1'
+    networks:
+      api-network:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=recommandation-db
+    ports:
+      - "6003:5432"
+
+networks:
+  api-network:
+
+volumes:
+  ffu-postgres-preference-data:
+  ffu-postgres-user-data:
+

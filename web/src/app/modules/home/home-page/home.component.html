@@ -1,0 +1,8 @@
+<app-slider-films [title]="'home.newest' | translate" [films]="newestFilms"></app-slider-films>
+<app-slider-films [title]="'home.popular' | translate" [films]="popularFilms"></app-slider-films>
+<app-slider-films [title]="'home.bestRated' | translate" [films]="bestRatedFilms"></app-slider-films>
+<app-slider-films [title]="'home.recommandations' | translate" [noDataText]="'slider.noLikes' | translate" [films]="recommandationFilms"></app-slider-films>
+
+<ngx-spinner *ngIf="!bestRatedFilms?.length || !newestFilms?.length" color="grey" bdColor="rgba(0, 0, 0, 0)"
+  size="medium" type="ball-triangle-path" [fullScreen]="false">
+</ngx-spinner>

@@ -1,0 +1,25 @@
+---
+# tasks file for film4you
+- name: Copying production directory on the server
+  copy:
+    src: "../production"
+    dest: "/home/{{ ansible_user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: u=rw,g=rw,o=r
+    force: yes
+
+- name: docker login
+  docker_login:
+    registry_url: registry.gitlab.com
+    username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+
+- name: Deploying app on stack
+  docker_stack:
+    state: present
+    name: "{{ stack_name }}"
+    with_registry_auth: yes
+    prune: yes
+    compose:
+      - "/home/{{ ansible_user }}/production/docker-compose-devops.yml"

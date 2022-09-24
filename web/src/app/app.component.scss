@@ -1,0 +1,29 @@
+.container-content {
+  background-color: var(--background-primary);
+}
+
+.btn-scroll-top {
+  position: fixed;
+  z-index: 1;
+  bottom: -100px;
+  opacity: 0;
+  transition: all 0.3s;
+  display: block;
+  box-shadow: 0px 0px 5px #1e1b1b;
+  right: 50px;
+  background: #2196f3;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+
+  fa-icon {
+    margin: unset !important;
+    color: white;
+    font-size: 20px;
+  }
+
+  &.visible {
+    opacity: 1;
+    bottom: 30px;
+  }
+}
